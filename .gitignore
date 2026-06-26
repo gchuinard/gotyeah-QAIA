@@ -1,0 +1,22 @@
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+
+# Tooling caches
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# Generated test output (the tool writes here; not source)
+tests/generated/*
+!tests/generated/.gitkeep

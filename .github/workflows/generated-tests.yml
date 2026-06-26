@@ -1,0 +1,35 @@
+# TEMPLATE — this workflow belongs in the TARGET repository (where QAIA opens PRs),
+# not in this tool's repo. It runs the generated tests against a running
+# system-under-test. BASE_URL is provided as a repo variable/secret.
+#
+# In this tool's own repo it is a no-op: tests/generated/ is gitignored, so there
+# is nothing to run.
+name: generated-tests
+
+on:
+  pull_request:
+
+jobs:
+  run-generated-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: detect
+        name: Detect generated tests
+        run: |
+          if ls tests/generated/test_*.py >/dev/null 2>&1; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "No generated tests committed here — skipping (expected in the tool repo)."
+          fi
+      - if: steps.detect.outputs.present == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - if: steps.detect.outputs.present == 'true'
+        run: pip install pytest httpx
+      - if: steps.detect.outputs.present == 'true'
+        env:
+          BASE_URL: ${{ vars.BASE_URL }}
+        run: pytest tests/generated -q

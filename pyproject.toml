@@ -1,0 +1,64 @@
+[project]
+name = "qaia"
+version = "0.1.0"
+description = "Generate (and later execute) automated tests from specs — MVP: Gherkin .feature -> pytest+httpx tests -> GitHub PR."
+requires-python = ">=3.12"
+readme = "README.md"
+dependencies = [
+    "anthropic>=0.40",
+    "httpx>=0.27",
+    "pydantic>=2.6",
+    "pydantic-settings>=2.2",
+    "fastapi>=0.110",
+    "uvicorn[standard]>=0.29",
+    "typer>=0.12",
+]
+
+[project.scripts]
+qaia = "qaia.cli:main"
+
+[dependency-groups]
+dev = [
+    "mypy>=1.10",
+    "ruff>=0.5",
+    "pytest>=8.2",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/qaia"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "TID", "RUF"]
+
+[tool.ruff.lint.flake8-bugbear]
+# Typer's documented pattern puts these calls in argument defaults.
+extend-immutable-calls = ["typer.Argument", "typer.Option"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+mypy_path = "src"
+files = ["src", "tests"]
+plugins = ["pydantic.mypy"]
+
+# The Anthropic SDK is the single isolated seam (src/qaia/generation/client.py);
+# it may ship partial type information depending on the resolved version.
+[[tool.mypy.overrides]]
+module = ["anthropic.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+norecursedirs = ["tests/generated"]
+python_classes = ["*Tests"]  # avoid collecting the imported TestKind enum
+addopts = "-q"

@@ -1,0 +1,17 @@
+# FUTURE — whitelist for the agentic EXECUTION phase (`claude -p --allowedTools`).
+# UNUSED in the MVP. Versioned here so the whitelist is a diffable, code-reviewed
+# artifact from day one rather than an ad-hoc runtime flag.
+#
+# The GENERATION phase has NO tool access. Only the future Executor — running in a
+# separate hardened sandbox — consults this file. See src/qaia/execution/README.md
+# and ExecutionContext.allowed_tools in src/qaia/domain/models.py.
+
+version: 1
+deny_by_default: true
+
+# Minimal set a self-healing run would need — kept intentionally tight.
+allowed_tools:
+  - "Read"
+  - "Edit"
+  - "Bash(pytest:*)"
+  # - "Bash(python -m pytest:*)"
