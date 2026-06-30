@@ -22,4 +22,13 @@ jobs:
       - name: Types
         run: uv run mypy
       - name: Tests
-        run: uv run pytest
+        run: uv run --with allure-pytest pytest --alluredir=allure-results
+      - name: Push Allure results
+        if: ${{ always() && github.ref == 'refs/heads/main' }}
+        uses: gchuinard/gotyeah-allure/actions/push-allure-results@main
+        with:
+          site: gotyeah-QAIA
+          results-dir: allure-results
+          ssh-host: ${{ secrets.SSH_HOST }}
+          ssh-user: ${{ secrets.SSH_USER }}
+          ssh-key: ${{ secrets.SSH_KEY }}
