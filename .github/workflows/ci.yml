@@ -9,8 +9,11 @@ jobs:
   quality:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
+      # Node 24 depuis le 25/09/2026 : checkout v4 → v5, setup-uv v5 → v7 (v6 tournait encore
+      # sous Node 20). Depuis v6, python-version n'active plus de venv : sans effet ici, tout
+      # passe par « uv run », qui prend le .venv créé par « uv sync ».
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v7
         with:
           python-version: "3.12"
           enable-cache: true

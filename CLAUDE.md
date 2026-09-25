@@ -93,9 +93,12 @@ excluded from collection. CI runs `ruff` + `mypy --strict` + `pytest`.
 ## CI/CD & deploy
 
 `ci.yml` gates merges (fully mocked). `deploy.yml` cross-builds the arm64 image
-(buildx → GHCR) and SSH-deploys to the Pi from `main` behind a protected
-Environment. `generated-tests.yml` is the template that runs generated tests in
-GitHub's sandbox (belongs in the target repo).
+(buildx → GHCR) and SSH-deploys to the Pi behind a protected Environment. It is
+**suspended since 2026-09-25** (manual trigger only): it failed on every push to
+`main` (uppercase GHCR name, now fixed; no target on the Pi; no SSH_HOST,
+SSH_USER or SSH_KEY secret on GitHub). Its header lists what to do before turning
+the push trigger back on. `generated-tests.yml` is the template that runs
+generated tests in GitHub's sandbox (belongs in the target repo).
 
 ## Docker / Raspberry Pi runtime
 

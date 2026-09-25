@@ -13,7 +13,8 @@ jobs:
   run-generated-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      # Node 24 depuis le 25/09/2026 : checkout v4 → v5, setup-python v5 → v6.
+      - uses: actions/checkout@v5
       - id: detect
         name: Detect generated tests
         run: |
@@ -24,7 +25,7 @@ jobs:
             echo "No generated tests committed here — skipping (expected in the tool repo)."
           fi
       - if: steps.detect.outputs.present == 'true'
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - if: steps.detect.outputs.present == 'true'
